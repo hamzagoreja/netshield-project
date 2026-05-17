@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 public class URLScanner extends ScannerService{
     @Value("${virustotal.apikey}")
     private String apikey;
+
     @Override
     public String Scan(String target){
 
