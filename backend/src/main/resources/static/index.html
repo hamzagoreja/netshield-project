@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>NetShield Security Scanner</title>
+</head>
+
+<body>
+
+<h1>NETSHIELD SECURITY SCANNER</h1>
+
+<hr>
+
+<!-- URL SCANNER -->
+<h2>Scan URL</h2>
+
+<form action="/scan/url" method="post">
+
+    <input type="text"
+           name="target"
+           placeholder="Enter URL here"
+           size="50">
+
+    <button type="submit">Scan URL</button>
+
+</form>
+
+<br><br>
+
+<!-- FILE SCANNER -->
+<h2>Scan File</h2>
+
+<form action="/scan/file"
+      method="POST"
+      enctype="multipart/form-data">
+
+    <input type="file" name="file">
+
+    <button type="submit">Upload File</button>
+
+</form>
+
+<br><br>
+
+<!-- IMAGE SCANNER -->
+<h2>Scan Image</h2>
+
+<form action="/scan/image"
+      method="POST"
+      enctype="multipart/form-data">
+
+    <input type="file" name="image">
+
+    <button type="submit">Upload Image</button>
+
+</form>
+
+</body>
+
+</html>

@@ -11,7 +11,10 @@ public class ScanResult {
     private long ID;
     private String scanType;
     private String target;
+
+    @Column(columnDefinition = "TEXT")
     private String result;
+
     private String scanDate;
     public ScanResult()
     {
