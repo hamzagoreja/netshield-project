@@ -3,33 +3,43 @@ package com.netshield.netshield.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "scan_results")
 public class ScanResult {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private long ID;
     private String scanType;
+
     private String target;
 
     @Column(columnDefinition = "TEXT")
     private String result;
 
     private String scanDate;
-    public ScanResult()
-    {
 
+    public ScanResult() {
     }
 
-    public ScanResult(String scanType,String target,String result ,String scanDate){
-        this.scanType=scanType;
-        this.target=target;
-        this.result=result;
-        this.scanDate=scanDate;
+    public ScanResult(
+            String scanType,
+            String target,
+            String result,
+            String scanDate
+    ) {
+        this.scanType = scanType;
+        this.target = target;
+        this.result = result;
+        this.scanDate = scanDate;
     }
 
-    public long getID() {
-        return ID;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getScanType() {

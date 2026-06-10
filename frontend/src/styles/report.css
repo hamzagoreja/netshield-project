@@ -1,0 +1,93 @@
+.report-card {
+    background: rgba(10,15,35,0.8);
+    border: 1px solid #00f0ff;
+    border-radius: 20px;
+    padding: 30px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 0 25px rgba(0,240,255,.3);
+    margin-top: 30px;
+}
+
+.report-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.report-header h2 {
+    color: #00f0ff;
+}
+
+.risk-badge {
+    text-align: center;
+    padding: 15px;
+    border: 2px solid;
+    border-radius: 12px;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+.report-grid {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 20px;
+}
+
+.report-item {
+    background: rgba(255,255,255,.05);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.report-item span {
+    display:block;
+    color:#aaa;
+}
+
+.report-item strong {
+    color:white;
+}
+
+.engines-grid {
+    display:grid;
+    grid-template-columns: repeat(4,1fr);
+    gap:15px;
+    margin-top:20px;
+}
+
+.engine-box {
+    text-align:center;
+    padding:20px;
+    border-radius:15px;
+}
+
+.malicious {
+    background:#2a0008;
+    border:1px solid #ff003c;
+}
+
+.suspicious {
+    background:#2a1900;
+    border:1px solid #ffaa00;
+}
+
+.harmless {
+    background:#002a12;
+    border:1px solid #00ff66;
+}
+
+.undetected {
+    background:#0c1020;
+    border:1px solid #00f0ff;
+}
+
+.engine-box h4 {
+    font-size:30px;
+}
+
+.recommendation-box {
+    margin-top:25px;
+    padding:20px;
+    border:1px solid #00f0ff;
+    border-radius:12px;
+}

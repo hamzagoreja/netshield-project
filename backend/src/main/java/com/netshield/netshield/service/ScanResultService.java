@@ -17,7 +17,7 @@ public class ScanResultService{
 
     }
 
-    public List <ScanResult> getAllScanResults() {
+    public List<ScanResult> getAllScanResults() {
         return scanResultRepository.findAll();
     }
 }

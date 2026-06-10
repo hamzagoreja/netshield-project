@@ -87,31 +87,17 @@ public class URLScanner extends ScannerService{
                     if(totalEngines > 0){
                         securityScore = ((harmless + undetected) * 100) / totalEngines;
                     }
-                    return "<pre>" +
-                            "\n========== NETSHIELD URL REPORT ==========\n\n" +
-                            "URL Information:\n" +
-                            "--------------------------------\n" +
-                            "Target URL      : " + target + "\n" +
-                            "Scan Status     : COMPLETED\n" +
-                            "Risk Level      : " + riskLevel + "\n\n" +
-
-                            "Detection Summary:\n" +
-                            "--------------------------------\n" +
-                            "Malicious Engines : " + malicious + "\n" +
-                            "Suspicious Engines: " + suspicious + "\n" +
-                            "Harmless Engines  : " + harmless + "\n" +
-                            "Undetected Engines: " + undetected + "\n" +
-                            "Timeout Engines   : " + timeout + "\n" +
-                            "Total Engines     : " + totalEngines + "\n\n" +
-
-                            "Threat Analysis:\n" +
-                            "--------------------------------\n" +
-                            "Detection Ratio : " + malicious + "/" + totalEngines + "\n" +
-
-                            "Security Score  : " + securityScore + "% Safe\n\n" +
-
-                            "Recommendation:\n" + "--------------------------------\n" + recommendation + "\n\n============================================"
-                            + "</pre>";
+                    return
+                            "VERDICT: SAFE\n" +
+                                    "Risk Level: " + riskLevel + "\n" +
+                                    "Malicious Engines: " + malicious + "\n" +
+                                    "Suspicious Engines: " + suspicious + "\n" +
+                                    "Harmless Engines: " + harmless + "\n" +
+                                    "Undetected Engines: " + undetected + "\n" +
+                                    "Total Engines: " + totalEngines + "\n" +
+                                    "Detection Ratio: " + malicious + "/" + totalEngines + "\n" +
+                                    "Security Score: " + securityScore + "% Safe\n" +
+                                    "Recommendation: " + recommendation;
                 }
             }
         return "URL scan is taking too long. Please try again.";

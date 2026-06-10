@@ -9,6 +9,8 @@ import java.time.LocalDate;
 
     @Controller
     @RequestMapping("/scan")
+    @CrossOrigin(origins = "http://localhost:3000") // This lets your Next.js dashboard call this controller
+
     public class URLScannerController {
         private final URLScanner urlScanner;
         private final ScanResultService scanResultService;
@@ -23,6 +25,9 @@ import java.time.LocalDate;
             if (target==null || target.trim().isEmpty()){
                 return ResponseEntity.badRequest().body("Please provide a valid URL string to scan.");
             }
+            System.out.println("Length = " + target.length());
+
+
             String result=urlScanner.Scan(target);
             ScanResult scanResult=new ScanResult("URL",target,result,LocalDate.now().toString());
             scanResultService.saveScanResult(scanResult);
