@@ -7,7 +7,7 @@ import  java.util.List;
 
     @RestController
     @RequestMapping("/scan")
-    @CrossOrigin(origins = "http://localhost:3000") // This lets your Next.js dashboard call this controller
+    @CrossOrigin(origins = "http://localhost:3000")
 
     public class ScanResultController{
         private ScanResultService scanResultService;
@@ -17,7 +17,6 @@ import  java.util.List;
         @PostMapping("/add")
         public ScanResult saveScanResult(@RequestBody ScanResult scanResult){
             return scanResultService.saveScanResult(scanResult);
-
         }
         @GetMapping("/all")
         public List<ScanResult> getAllScanResults(){

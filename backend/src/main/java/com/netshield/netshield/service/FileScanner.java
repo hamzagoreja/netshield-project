@@ -19,9 +19,8 @@ public class FileScanner {
 
     public String uploadFile(MultipartFile file) {
         try {
-            // Determine dynamic API upload URL based on the physical size of the document payload
             String url = "https://www.virustotal.com/api/v3/files";
-            if (file.getSize() > 32 * 1024 * 1024) { // Larger than 32MB route handler
+            if (file.getSize() > 32 * 1024 * 1024) {
                 System.out.println("[NetShield] File exceeds 32MB standard boundary. Fetching specialized big-file URL entry point...");
                 url = getLargeFileUploadUrl();
             }
@@ -30,8 +29,7 @@ public class FileScanner {
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
             headers.set("x-apikey", apiKey != null ? apiKey.trim() : "");
 
-            // Using standard LinkedMultiValueMap with explicit content-disposition mapping
-            // rather than custom anonymous inner classes to protect memory layout alignment
+
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 
             HttpHeaders fileHeaders = new HttpHeaders();
@@ -51,7 +49,6 @@ public class FileScanner {
 
             JSONObject json = new JSONObject(response.getBody());
 
-            // Defensive validation guardrail against structural layout variations
             if (!json.has("data")) {
                 if (json.has("error")) {
                     String apiErrorMessage = json.getJSONObject("error").getString("message");
@@ -90,7 +87,6 @@ public class FileScanner {
             headers.set("x-apikey", apiKey != null ? apiKey.trim() : "");
             HttpEntity<Void> request = new HttpEntity<>(headers);
 
-            // Fast local loop monitoring with standard fallback triggers
             for (int attempt = 1; attempt <= 15; attempt++) {
                 System.out.println("[NetShield Loop] Sync verification tracking... attempt " + attempt + "/15");
                 Thread.sleep(7000);
