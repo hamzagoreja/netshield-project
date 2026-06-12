@@ -1,14 +1,11 @@
 "use client";
-
 import { useState, useEffect, useRef } from "react";
 import { apiService } from "@/services/apiService";
-
 const STATUS_META = {
   safe:      { label: "SAFE",      color: "#00e676", glow: "#00e67640" },
   warning:   { label: "WARNING",   color: "#ffab00", glow: "#ffab0040" },
   malicious: { label: "MALICIOUS", color: "#ff1744", glow: "#ff174440" },
 };
-
 function deriveStatus(result) {
   const m = parseInt(result.malicious ?? 0);
   const s = parseInt(result.suspicious ?? 0);
@@ -16,7 +13,6 @@ function deriveStatus(result) {
   if (s > 0) return "warning";
   return "safe";
 }
-
 function Counter({ value, duration = 1000 }) {
   const n = parseInt(value) || 0;
   const [display, setDisplay] = useState(0);
@@ -33,7 +29,6 @@ function Counter({ value, duration = 1000 }) {
   }, [n, duration]);
   return <>{display}</>;
 }
-
 function ScoreBar({ score, animate }) {
   const match = (score ?? "").match(/(\d+)/);
   const pct = match ? parseInt(match[1]) : null;
@@ -42,7 +37,7 @@ function ScoreBar({ score, animate }) {
   return (
     <div style={{ marginBottom: 24 }}>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-        <span style={{ fontSize: 11, color: "#546e7a", textTransform: "uppercase", letterSpacing: "0.1em" }}>Security Score</span>
+        <span style={{ fontSize: 11, color: "#cfd8dc", textTransform: "uppercase", letterSpacing: "0.1em" }}>Security Score</span>
         <span style={{ fontSize: 14, fontWeight: 800, color, fontFamily: "'JetBrains Mono',monospace" }}>{pct}%</span>
       </div>
       <div style={{ height: 8, background: "#0d2137", borderRadius: 999, overflow: "hidden" }}>
@@ -58,7 +53,6 @@ function ScoreBar({ score, animate }) {
     </div>
   );
 }
-
 // ─── Structured report ────────────────────────────────────────
 function parseReport(text) {
   if (!text) return null;
@@ -75,7 +69,6 @@ function parseReport(text) {
     fileName: get("File Name"), recommend: get("Recommendation"),
   };
 }
-
 function ReportBadge({ value }) {
   if (!value) return null;
   const upper = value.toUpperCase();
@@ -84,7 +77,6 @@ function ReportBadge({ value }) {
     <span style={{ padding: "2px 10px", borderRadius: 999, fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", color, background: color + "18", border: `1px solid ${color}44`, boxShadow: `0 0 8px ${color}22` }}>{value}</span>
   );
 }
-
 function EngineBar({ label, value, total, color }) {
   const n = parseInt(value) || 0;
   const t = parseInt(total) || 91;
@@ -94,7 +86,7 @@ function EngineBar({ label, value, total, color }) {
   return (
     <div style={{ marginBottom: 10 }}>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-        <span style={{ fontSize: 10, color: "#546e7a", textTransform: "uppercase", letterSpacing: "0.08em" }}>{label}</span>
+        <span style={{ fontSize: 10, color: "#cfd8dc", textTransform: "uppercase", letterSpacing: "0.08em" }}>{label}</span>
         <span style={{ fontSize: 11, fontWeight: 700, color, fontFamily: "'JetBrains Mono',monospace" }}>{n}</span>
       </div>
       <div style={{ height: 4, background: "#0d2137", borderRadius: 999, overflow: "hidden" }}>
@@ -103,66 +95,67 @@ function EngineBar({ label, value, total, color }) {
     </div>
   );
 }
-
 function RawOutput({ text }) {
   const [open, setOpen] = useState(false);
   const [vis,  setVis]  = useState(false);
   const report = parseReport(text);
   if (!report) return null;
-
   const handleOpen = () => {
     if (open) { setOpen(false); setVis(false); return; }
     setOpen(true);
     setTimeout(() => setVis(true), 30);
   };
-
   const verdictColor = (report.verdict ?? "").toUpperCase().includes("SAFE") ? "#00e676" : (report.verdict ?? "").toUpperCase().includes("MALICIOUS") ? "#ff1744" : "#ffab00";
-
   return (
     <div style={{ marginTop: 4 }}>
       <button onClick={handleOpen}
-        style={{ width: "100%", padding: "11px 18px", display: "flex", alignItems: "center", gap: 10, background: open ? "#060f1a" : "transparent", border: `1px solid ${open ? "#00e5ff33" : "#00e5ff18"}`, borderRadius: open ? "14px 14px 0 0" : 14, cursor: "pointer", transition: "all 0.2s" }}
-        onMouseEnter={e => { if (!open) e.currentTarget.style.borderColor = "#00e5ff33"; }}
+        style={{ width: "100%", padding: "11px 18px", display: "flex", alignItems: "center", gap: 10, background: open ? "#060f1a" : "transparent", border: `1px solid ${open ? "#00e5ff55" : "#00e5ff18"}`, borderRadius: open ? "14px 14px 0 0" : 14, cursor: "pointer", transition: "all 0.2s" }}
+        onMouseEnter={e => { if (!open) e.currentTarget.style.borderColor = "#00e5ff55"; }}
         onMouseLeave={e => { if (!open) e.currentTarget.style.borderColor = "#00e5ff18"; }}
       >
-        <span style={{ fontSize: 13 }}>📋</span>
-        <span style={{ fontSize: 10, fontWeight: 700, color: "#00e5ff77", letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: "'JetBrains Mono',monospace", flex: 1, textAlign: "left" }}>Full Scan Report</span>
-        <span style={{ fontSize: 12, color: "#00e5ff44", transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s", display: "inline-block" }}>▼</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /><rect x="8" y="2" width="8" height="4" rx="1" ry="1" /></svg>
+        <span style={{ fontSize: 10, fontWeight: 700, color: "#00e5ffb3", letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: "'JetBrains Mono',monospace", flex: 1, textAlign: "left" }}>Full Scan Report</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "#00e5ff88", transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s", display: "inline-block" }}><polyline points="6 9 12 15 18 9" /></svg>
       </button>
-
       {open && (
         <div style={{ background: "#030c18", border: "1px solid #00e5ff1a", borderTop: "none", borderRadius: "0 0 14px 14px", padding: "20px 22px", opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(-8px)", transition: "opacity 0.3s ease, transform 0.3s ease", fontFamily: "'JetBrains Mono',monospace" }}>
           {report.verdict && (
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", borderRadius: 10, marginBottom: 18, background: verdictColor + "0f", border: `1px solid ${verdictColor}33` }}>
-              <span style={{ fontSize: 10, color: "#546e7a", textTransform: "uppercase", letterSpacing: "0.1em" }}>Verdict</span>
+              <span style={{ fontSize: 10, color: "#cfd8dc", textTransform: "uppercase", letterSpacing: "0.1em" }}>Verdict</span>
               <span style={{ fontSize: 14, fontWeight: 900, color: verdictColor, letterSpacing: "0.15em", textShadow: `0 0 12px ${verdictColor}88`, animation: "verdict-glow 2s ease-in-out infinite" }}>{report.verdict}</span>
             </div>
           )}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 18 }}>
             {[{ label: "Risk Level", value: report.riskLevel, badge: true }, { label: "Security Score", value: report.score }, { label: "Detection Ratio", value: report.ratio }, { label: "File Name", value: report.fileName }].filter(r => r.value).map(({ label, value, badge }) => (
               <div key={label} style={{ background: "#0a1929", borderRadius: 10, padding: "10px 14px", border: "1px solid #00ffff0a" }}>
-                <div style={{ fontSize: 9, color: "#37474f", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>{label}</div>
+                <div style={{ fontSize: 9, color: "#cfd8dc", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>{label}</div>
                 {badge ? <ReportBadge value={value} /> : <span style={{ fontSize: 12, color: "#b2ebf2", wordBreak: "break-all" }}>{value}</span>}
               </div>
             ))}
           </div>
           <div style={{ background: "#0a1929", borderRadius: 10, padding: "14px 16px", marginBottom: 18, border: "1px solid #00ffff0a" }}>
-            <div style={{ fontSize: 9, color: "#37474f", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>Engine Breakdown</div>
+            <div style={{ fontSize: 9, color: "#cfd8dc", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>Engine Breakdown</div>
             <EngineBar label="Malicious"  value={report.malicious}  total={report.total} color="#ff1744" />
             <EngineBar label="Suspicious" value={report.suspicious} total={report.total} color="#ffab00" />
             <EngineBar label="Harmless"   value={report.harmless}   total={report.total} color="#00e676" />
-            <EngineBar label="Undetected" value={report.undetected} total={report.total} color="#546e7a" />
+            <EngineBar label="Undetected" value={report.undetected} total={report.total} color="#cfd8dc" />
             <div style={{ marginTop: 10, paddingTop: 10, borderTop: "1px solid #00ffff0a", display: "flex", justifyContent: "space-between" }}>
-              <span style={{ fontSize: 10, color: "#37474f", textTransform: "uppercase", letterSpacing: "0.08em" }}>Total Engines</span>
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#546e7a" }}>{report.total ?? "—"}</span>
+              <span style={{ fontSize: 10, color: "#cfd8dc", textTransform: "uppercase", letterSpacing: "0.08em" }}>Total Engines</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#cfd8dc" }}>{report.total ?? "—"}</span>
             </div>
           </div>
           {report.recommend && (
             <div style={{ background: verdictColor + "08", border: `1px solid ${verdictColor}22`, borderRadius: 10, padding: "12px 16px", display: "flex", gap: 10, alignItems: "flex-start" }}>
-              <span style={{ fontSize: 16, flexShrink: 0 }}>{verdictColor === "#00e676" ? "✅" : verdictColor === "#ff1744" ? "🚨" : "⚠️"}</span>
+              {verdictColor === "#00e676" ? (
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00e676" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><polyline points="20 6 9 17 4 12" /></svg>
+              ) : verdictColor === "#ff1744" ? (
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1744" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, animation: "beacon-pulse 1.5s infinite" }}><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffab00" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
+              )}
               <div>
-                <div style={{ fontSize: 9, color: "#37474f", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>Recommendation</div>
-                <div style={{ fontSize: 12, color: "#80cbc4", lineHeight: 1.6 }}>{report.recommend}</div>
+                <div style={{ fontSize: 9, color: "#cfd8dc", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>Recommendation</div>
+                <div style={{ fontSize: 12, color: "#e0f2f1", lineHeight: 1.6 }}>{report.recommend}</div>
               </div>
             </div>
           )}
@@ -171,13 +164,11 @@ function RawOutput({ text }) {
     </div>
   );
 }
-
 function ResultCard({ result }) {
   const [vis, setVis] = useState(false);
   const status = deriveStatus(result);
   const meta = STATUS_META[status];
   useEffect(() => { setTimeout(() => setVis(true), 60); }, []);
-
   return (
     <div style={{
       background: "linear-gradient(160deg,#0d2137ee,#08111fee)",
@@ -197,7 +188,7 @@ function ResultCard({ result }) {
             WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
             fontFamily: "'Syne',sans-serif", fontWeight: 800,
           }}>Scan Report</h2>
-          <p style={{ margin: "4px 0 0", fontSize: 12, color: "#37474f", fontFamily: "'JetBrains Mono',monospace" }}>
+          <p style={{ margin: "4px 0 0", fontSize: 12, color: "#cfd8dc", fontFamily: "'JetBrains Mono',monospace" }}>
             {result.target}
           </p>
         </div>
@@ -217,9 +208,7 @@ function ResultCard({ result }) {
           {meta.label}
         </div>
       </div>
-
       <ScoreBar score={result.score} animate={vis} />
-
       <div style={{ display: "flex", gap: 10, marginBottom: 24 }}>
         {[
           { label: "Malicious",  value: result.malicious,  color: "#ff1744" },
@@ -234,12 +223,11 @@ function ResultCard({ result }) {
             <div style={{ fontSize: 28, fontWeight: 800, color, fontFamily: "'JetBrains Mono',monospace", marginBottom: 4 }}>
               <Counter value={value} />
             </div>
-            <div style={{ fontSize: 9, color: "#546e7a", textTransform: "uppercase", letterSpacing: "0.1em" }}>{label}</div>
+            <div style={{ fontSize: 9, color: "#cfd8dc", textTransform: "uppercase", letterSpacing: "0.1em" }}>{label}</div>
           </div>
         ))}
       </div>
-
-      <div style={{ background: "#060f1a", borderRadius: 14, padding: "6px 18px", marginBottom: 20, border: "1px solid #00ffff0a" }}>
+      <div style={{ background: "#060f1a", borderRadius: 14, padding: "6px 18px", marginBottom: 20, border: "1px solid #00ffff1a" }}>
         {[
           ["Risk Level", result.riskLevel],
           ["Detection Ratio", result.ratio],
@@ -248,37 +236,32 @@ function ResultCard({ result }) {
           <div key={label} style={{
             display: "flex", justifyContent: "space-between",
             alignItems: "flex-start", gap: 16,
-            padding: "11px 0", borderBottom: "1px solid #00ffff08",
+            padding: "11px 0", borderBottom: "1px solid #00ffff10",
           }}>
-            <span style={{ fontSize: 10, color: "#546e7a", textTransform: "uppercase", letterSpacing: "0.08em", flexShrink: 0 }}>{label}</span>
+            <span style={{ fontSize: 10, color: "#cfd8dc", textTransform: "uppercase", letterSpacing: "0.08em", flexShrink: 0 }}>{label}</span>
             <span style={{ fontSize: 13, color: "#e0f7fa", textAlign: "right", wordBreak: "break-word" }}>{value}</span>
           </div>
         ))}
       </div>
-
       {result.rawOutput && <RawOutput text={result.rawOutput} />}
     </div>
   );
 }
-
 // ─── Drop zone ────────────────────────────────────────────────
 function DropZone({ file, onFile, disabled }) {
   const [drag, setDrag] = useState(false);
   const inputRef = useRef(null);
-
   const handleDrop = (e) => {
     e.preventDefault();
     setDrag(false);
     const f = e.dataTransfer.files[0];
     if (f) onFile(f);
   };
-
   const formatSize = (bytes) => {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
   };
-
   return (
     <div>
       <div
@@ -297,6 +280,16 @@ function DropZone({ file, onFile, disabled }) {
           position: "relative",
           overflow: "hidden",
         }}
+        onMouseEnter={e => {
+          if (!disabled) {
+            e.currentTarget.style.borderColor = file ? "#00e676aa" : "#00e5ffa0";
+          }
+        }}
+        onMouseLeave={e => {
+          if (!disabled) {
+            e.currentTarget.style.borderColor = drag ? "#00e5ff88" : file ? "#00e67666" : "#00ffff22";
+          }
+        }}
       >
         {/* Animated corner brackets */}
         {["tl","tr","bl","br"].map(pos => (
@@ -311,26 +304,26 @@ function DropZone({ file, onFile, disabled }) {
             borderBottom: pos.startsWith("b") ? `2px solid ${drag ? "#00e5ff" : "#00e5ff44"}` : "none",
             borderLeft: pos.endsWith("l") ? `2px solid ${drag ? "#00e5ff" : "#00e5ff44"}` : "none",
             borderRight: pos.endsWith("r") ? `2px solid ${drag ? "#00e5ff" : "#00e5ff44"}` : "none",
-            transition: "border-color 0.3s",
+            transition: "border-color 0.3s, transform 0.3s",
+            transform: drag ? "scale(1.2)" : "scale(1)",
           }} />
         ))}
-
         {file ? (
           <>
-            <div style={{ fontSize: 36, marginBottom: 10 }}>📄</div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#00e676" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 10, filter: "drop-shadow(0 0 8px #00e67644)", display: "block", marginLeft: "auto", marginRight: "auto" }}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
             <p style={{ color: "#00e676", fontWeight: 700, fontSize: 14, marginBottom: 4, fontFamily: "'Syne',sans-serif" }}>
               {file.name}
             </p>
-            <p style={{ color: "#546e7a", fontSize: 11 }}>{formatSize(file.size)}</p>
-            <p style={{ color: "#00e5ff44", fontSize: 10, marginTop: 8 }}>Click to change file</p>
+            <p style={{ color: "#cfd8dc", fontSize: 11 }}>{formatSize(file.size)}</p>
+            <p style={{ color: "#00e5ff88", fontSize: 10, marginTop: 8 }}>Click to change file</p>
           </>
         ) : (
           <>
-            <div style={{ fontSize: 40, marginBottom: 14, opacity: drag ? 1 : 0.6 }}>📁</div>
-            <p style={{ color: drag ? "#00e5ff" : "#546e7a", fontSize: 14, fontWeight: 600, marginBottom: 6, transition: "color 0.2s" }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke={drag ? "#00e5ff" : "#b0bec5"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 14, opacity: drag ? 1 : 0.6, transition: "stroke 0.2s", display: "block", marginLeft: "auto", marginRight: "auto" }}><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" /></svg>
+            <p style={{ color: drag ? "#00e5ff" : "#cfd8dc", fontSize: 14, fontWeight: 600, marginBottom: 6, transition: "color 0.2s" }}>
               {drag ? "Drop it!" : "Drag & drop a file here"}
             </p>
-            <p style={{ color: "#37474f", fontSize: 11 }}>or click to browse</p>
+            <p style={{ color: "#b0bec5", fontSize: 11 }}>or click to browse</p>
           </>
         )}
       </div>
@@ -343,7 +336,6 @@ function DropZone({ file, onFile, disabled }) {
     </div>
   );
 }
-
 function ScanningIndicator({ fileName }) {
   const [dots, setDots] = useState(0);
   const [pct, setPct] = useState(0);
@@ -352,7 +344,6 @@ function ScanningIndicator({ fileName }) {
     const t2 = setInterval(() => setPct(p => Math.min(p + Math.random() * 8, 92)), 300);
     return () => { clearInterval(t1); clearInterval(t2); };
   }, []);
-
   return (
     <div style={{
       background: "linear-gradient(160deg,#0d2137ee,#08111fee)",
@@ -361,11 +352,11 @@ function ScanningIndicator({ fileName }) {
       backdropFilter: "blur(16px)",
       animation: "float-up 0.5s ease forwards",
     }}>
-      <div style={{ fontSize: 36, marginBottom: 16 }}>🔬</div>
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 16, animation: "microscope-pulse 2s ease-in-out infinite", display: "block", marginLeft: "auto", marginRight: "auto" }}><path d="M6 18h8" /><path d="M3 22h18" /><path d="M14 22a7 7 0 1 0-14 0" /><path d="M9 14h2" /><path d="M9 12a3 3 0 0 1 6 0v5" /><path d="M12 2v3" /><path d="M11 5h2" /><path d="M12 5v9" /></svg>
       <p style={{ fontSize: 15, fontWeight: 700, color: "#00e5ff", fontFamily: "'Syne',sans-serif", marginBottom: 6 }}>
         Analysing{".".repeat(dots)}
       </p>
-      <p style={{ fontSize: 11, color: "#546e7a", fontFamily: "'JetBrains Mono',monospace", marginBottom: 20 }}>
+      <p style={{ fontSize: 11, color: "#cfd8dc", fontFamily: "'JetBrains Mono',monospace", marginBottom: 20 }}>
         {fileName}
       </p>
       {/* Fake progress bar */}
@@ -378,22 +369,19 @@ function ScanningIndicator({ fileName }) {
           boxShadow: "0 0 10px #00e5ff",
         }} />
       </div>
-      <p style={{ fontSize: 10, color: "#37474f", marginTop: 8, fontFamily: "'JetBrains Mono',monospace" }}>
+      <p style={{ fontSize: 10, color: "#cfd8dc", marginTop: 8, fontFamily: "'JetBrains Mono',monospace" }}>
         {Math.round(pct)}% complete
       </p>
     </div>
   );
 }
-
 export default function FileScanPage() {
   const [file, setFile]     = useState(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError]   = useState(null);
   const [ready, setReady]   = useState(false);
-
   useEffect(() => { setTimeout(() => setReady(true), 60); }, []);
-
   const handleScan = async () => {
     if (!file) return;
     setLoading(true);
@@ -408,18 +396,15 @@ export default function FileScanPage() {
       setLoading(false);
     }
   };
-
   const handleNewScan = () => {
     setFile(null);
     setResult(null);
     setError(null);
   };
-
   return (
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;600&display=swap');
-
         @keyframes float-up {
           from { opacity:0; transform:translateY(28px); }
           to   { opacity:1; transform:translateY(0); }
@@ -436,12 +421,19 @@ export default function FileScanPage() {
           0%,100% { opacity:1; }
           50%      { opacity:0.75; }
         }
+        @keyframes beacon-pulse {
+          0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px #ff174488); }
+          50% { transform: scale(1.1); filter: drop-shadow(0 0 8px #ff1744ff); }
+        }
+        @keyframes microscope-pulse {
+          0%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 4px #00e5ff44); }
+          50% { transform: translateY(-4px) scale(1.05); filter: drop-shadow(0 0 12px #00e5ffff); }
+        }
         * { box-sizing:border-box; margin:0; padding:0; }
         ::-webkit-scrollbar { width:5px; }
         ::-webkit-scrollbar-track { background:#060f1a; }
         ::-webkit-scrollbar-thumb { background:#00e5ff22; border-radius:3px; }
       `}</style>
-
       <div style={{ minHeight: "100vh", background: "#060f1a", fontFamily: "'JetBrains Mono',monospace", position: "relative", overflow: "hidden" }}>
         {/* Grid */}
         <div style={{
@@ -460,9 +452,7 @@ export default function FileScanPage() {
           background: "linear-gradient(90deg,transparent,#00e5ff44,transparent)",
           animation: "scan-line 7s linear infinite", pointerEvents: "none",
         }} />
-
         <div style={{ position: "relative", zIndex: 1, maxWidth: 680, margin: "0 auto", padding: "64px 24px 80px" }}>
-
           {/* Header */}
           <div style={{
             textAlign: "center", marginBottom: 48,
@@ -474,9 +464,11 @@ export default function FileScanPage() {
               background: "radial-gradient(circle,#00e5ff18,transparent)",
               border: "1px solid #00e5ff33",
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 26, margin: "0 auto 20px",
+              margin: "0 auto 20px",
               boxShadow: "0 0 30px #00e5ff18",
-            }}>📄</div>
+            }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 0 8px #00e5ff66)" }}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
+            </div>
             <h1 style={{
               fontSize: "clamp(28px,5vw,42px)", fontWeight: 800,
               background: "linear-gradient(90deg,#00e5ff,#00b0ff,#00e5ff)",
@@ -484,9 +476,8 @@ export default function FileScanPage() {
               WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
               fontFamily: "'Syne',sans-serif", letterSpacing: "-0.02em", marginBottom: 10,
             }}>File Scanner</h1>
-            <p style={{ color: "#37474f", fontSize: 13 }}>Upload any file to check for malware & threats</p>
+            <p style={{ color: "#cfd8dc", fontSize: 13 }}>Upload any file to check for malware & threats</p>
           </div>
-
           {/* Upload card */}
           {!result && !loading && (
             <div style={{
@@ -499,7 +490,6 @@ export default function FileScanPage() {
               animation: ready ? "float-up 0.6s ease 0.1s forwards" : "none",
             }}>
               <DropZone file={file} onFile={setFile} disabled={loading} />
-
               {file && (
                 <button
                   onClick={handleScan}
@@ -513,34 +503,43 @@ export default function FileScanPage() {
                     transition: "all 0.2s",
                     fontFamily: "'Syne',sans-serif",
                   }}
-                  onMouseEnter={e => e.currentTarget.style.boxShadow = "0 0 36px #00e5ff55"}
-                  onMouseLeave={e => e.currentTarget.style.boxShadow = "0 0 24px #00e5ff33"}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.boxShadow = "0 0 36px #00e5ff55";
+                    e.currentTarget.style.transform = "translateY(-1px)";
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.boxShadow = "0 0 24px #00e5ff33";
+                    e.currentTarget.style.transform = "none";
+                  }}
                 >
                   Scan File →
                 </button>
               )}
             </div>
           )}
-
           {loading && <ScanningIndicator fileName={file?.name ?? ""} />}
-
           {error && !loading && (
             <div style={{
               background: "#ff174411", border: "1px solid #ff174433",
               borderRadius: 16, padding: "20px 24px",
-              color: "#ff1744aa", fontSize: 13, textAlign: "center",
+              color: "#ff1744d0", fontSize: 13, textAlign: "center",
               animation: "float-up 0.4s ease forwards",
             }}>
-              ⚠ {error}
-              <br />
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: "middle", marginRight: 8, color: "#ff1744" }}><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
+                {error}
+              </div>
               <button onClick={handleNewScan} style={{
                 marginTop: 12, padding: "8px 20px", borderRadius: 8,
                 border: "1px solid #ff174433", background: "transparent",
                 color: "#ff1744aa", fontSize: 11, cursor: "pointer",
-              }}>Try Again</button>
+                transition: "all 0.2s",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = "#ff174418"; e.currentTarget.style.borderColor = "#ff174488"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "#ff174433"; }}
+              >Try Again</button>
             </div>
           )}
-
           {result && !loading && (
             <>
               <ResultCard result={result} />
@@ -567,3 +566,5 @@ export default function FileScanPage() {
     </>
   );
 }
+
+

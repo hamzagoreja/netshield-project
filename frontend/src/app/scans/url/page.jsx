@@ -1,15 +1,12 @@
 "use client";
-
 import { useState, useEffect, useRef } from "react";
 import { apiService } from "@/services/apiService";
-
 // ─── Shared status config ─────────────────────────────────────
 const STATUS_META = {
   safe:      { label: "SAFE",      color: "#00e676", glow: "#00e67640", icon: "✓" },
   warning:   { label: "WARNING",   color: "#ffab00", glow: "#ffab0040", icon: "⚠" },
   malicious: { label: "MALICIOUS", color: "#ff1744", glow: "#ff174440", icon: "✕" },
 };
-
 function deriveStatus(result) {
   const m = parseInt(result.malicious ?? 0);
   const s = parseInt(result.suspicious ?? 0);
@@ -17,7 +14,6 @@ function deriveStatus(result) {
   if (s > 0) return "warning";
   return "safe";
 }
-
 // ─── Animated counter ─────────────────────────────────────────
 function Counter({ value, duration = 1000 }) {
   const n = parseInt(value) || 0;
@@ -35,18 +31,16 @@ function Counter({ value, duration = 1000 }) {
   }, [n, duration]);
   return <>{display}</>;
 }
-
 // ─── Score bar ────────────────────────────────────────────────
 function ScoreBar({ score, animate }) {
   const match = (score ?? "").match(/(\d+)/);
   const pct = match ? parseInt(match[1]) : null;
   if (pct === null) return null;
   const color = pct >= 80 ? "#00e676" : pct >= 50 ? "#ffab00" : "#ff1744";
-
   return (
     <div style={{ marginBottom: 24 }}>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-        <span style={{ fontSize: 11, color: "#546e7a", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+        <span style={{ fontSize: 11, color: "#cfd8dc", textTransform: "uppercase", letterSpacing: "0.1em" }}>
           Security Score
         </span>
         <span style={{ fontSize: 14, fontWeight: 800, color, fontFamily: "'JetBrains Mono',monospace" }}>
@@ -66,7 +60,6 @@ function ScoreBar({ score, animate }) {
     </div>
   );
 }
-
 // ─── Structured report ────────────────────────────────────────
 function parseReport(text) {
   if (!text) return null;
@@ -89,7 +82,6 @@ function parseReport(text) {
     recommend:   get("Recommendation"),
   };
 }
-
 function ReportBadge({ value }) {
   if (!value) return null;
   const upper = value.toUpperCase();
@@ -109,7 +101,6 @@ function ReportBadge({ value }) {
     }}>{value}</span>
   );
 }
-
 function EngineBar({ label, value, total, color }) {
   const n = parseInt(value) || 0;
   const t = parseInt(total) || 91;
@@ -119,7 +110,7 @@ function EngineBar({ label, value, total, color }) {
   return (
     <div style={{ marginBottom: 10 }}>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-        <span style={{ fontSize: 10, color: "#546e7a", textTransform: "uppercase", letterSpacing: "0.08em" }}>{label}</span>
+        <span style={{ fontSize: 10, color: "#cfd8dc", textTransform: "uppercase", letterSpacing: "0.08em" }}>{label}</span>
         <span style={{ fontSize: 11, fontWeight: 700, color, fontFamily: "'JetBrains Mono',monospace" }}>{n}</span>
       </div>
       <div style={{ height: 4, background: "#0d2137", borderRadius: 999, overflow: "hidden" }}>
@@ -134,23 +125,19 @@ function EngineBar({ label, value, total, color }) {
     </div>
   );
 }
-
 function RawOutput({ text }) {
   const [open, setOpen] = useState(false);
   const [vis,  setVis]  = useState(false);
   const report = parseReport(text);
   if (!report) return null;
-
   const handleOpen = () => {
     if (open) { setOpen(false); setVis(false); return; }
     setOpen(true);
     setTimeout(() => setVis(true), 30);
   };
-
   const verdictColor =
     (report.verdict ?? "").toUpperCase().includes("SAFE")      ? "#00e676" :
     (report.verdict ?? "").toUpperCase().includes("MALICIOUS") ? "#ff1744" : "#ffab00";
-
   return (
     <div style={{ marginTop: 4 }}>
       {/* Toggle */}
@@ -160,26 +147,21 @@ function RawOutput({ text }) {
           width: "100%", padding: "11px 18px",
           display: "flex", alignItems: "center", gap: 10,
           background: open ? "#060f1a" : "transparent",
-          border: `1px solid ${open ? "#00e5ff33" : "#00e5ff18"}`,
+          border: `1px solid ${open ? "#00e5ff55" : "#00e5ff22"}`,
           borderRadius: open ? "14px 14px 0 0" : 14,
           cursor: "pointer", transition: "all 0.2s",
         }}
-        onMouseEnter={e => { if (!open) e.currentTarget.style.borderColor = "#00e5ff33"; }}
-        onMouseLeave={e => { if (!open) e.currentTarget.style.borderColor = "#00e5ff18"; }}
+        onMouseEnter={e => { if (!open) e.currentTarget.style.borderColor = "#00e5ff55"; }}
+        onMouseLeave={e => { if (!open) e.currentTarget.style.borderColor = "#00e5ff22"; }}
       >
-        <span style={{ fontSize: 13 }}>📋</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /><rect x="8" y="2" width="8" height="4" rx="1" ry="1" /></svg>
         <span style={{
-          fontSize: 10, fontWeight: 700, color: "#00e5ff77",
+          fontSize: 10, fontWeight: 700, color: "#00e5ffb3",
           letterSpacing: "0.12em", textTransform: "uppercase",
           fontFamily: "'JetBrains Mono',monospace", flex: 1, textAlign: "left",
         }}>Full Scan Report</span>
-        <span style={{
-          fontSize: 12, color: "#00e5ff44",
-          transform: open ? "rotate(180deg)" : "rotate(0deg)",
-          transition: "transform 0.25s", display: "inline-block",
-        }}>▼</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "#00e5ff88", transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s", display: "inline-block" }}><polyline points="6 9 12 15 18 9" /></svg>
       </button>
-
       {open && (
         <div style={{
           background: "#030c18",
@@ -192,7 +174,6 @@ function RawOutput({ text }) {
           transition: "opacity 0.3s ease, transform 0.3s ease",
           fontFamily: "'JetBrains Mono',monospace",
         }}>
-
           {/* ── Verdict banner ── */}
           {report.verdict && (
             <div style={{
@@ -202,7 +183,7 @@ function RawOutput({ text }) {
               border: `1px solid ${verdictColor}33`,
               boxShadow: `0 0 20px ${verdictColor}0a`,
             }}>
-              <span style={{ fontSize: 10, color: "#546e7a", textTransform: "uppercase", letterSpacing: "0.1em" }}>Verdict</span>
+              <span style={{ fontSize: 10, color: "#cfd8dc", textTransform: "uppercase", letterSpacing: "0.1em" }}>Verdict</span>
               <span style={{
                 fontSize: 14, fontWeight: 900, color: verdictColor,
                 letterSpacing: "0.15em",
@@ -211,7 +192,6 @@ function RawOutput({ text }) {
               }}>{report.verdict}</span>
             </div>
           )}
-
           {/* ── Two column grid ── */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 18 }}>
             {[
@@ -226,7 +206,7 @@ function RawOutput({ text }) {
                 padding: "10px 14px",
                 border: "1px solid #00ffff0a",
               }}>
-                <div style={{ fontSize: 9, color: "#37474f", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>
+                <div style={{ fontSize: 9, color: "#cfd8dc", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>
                   {label}
                 </div>
                 {badge
@@ -236,32 +216,30 @@ function RawOutput({ text }) {
               </div>
             ))}
           </div>
-
           {/* ── Engine breakdown bars ── */}
           <div style={{
             background: "#0a1929", borderRadius: 10,
             padding: "14px 16px", marginBottom: 18,
             border: "1px solid #00ffff0a",
           }}>
-            <div style={{ fontSize: 9, color: "#37474f", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
+            <div style={{ fontSize: 9, color: "#cfd8dc", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
               Engine Breakdown
             </div>
             <EngineBar label="Malicious"  value={report.malicious}  total={report.total} color="#ff1744" />
             <EngineBar label="Suspicious" value={report.suspicious} total={report.total} color="#ffab00" />
             <EngineBar label="Harmless"   value={report.harmless}   total={report.total} color="#00e676" />
-            <EngineBar label="Undetected" value={report.undetected} total={report.total} color="#546e7a" />
+            <EngineBar label="Undetected" value={report.undetected} total={report.total} color="#cfd8dc" />
             <div style={{
               marginTop: 10, paddingTop: 10,
               borderTop: "1px solid #00ffff0a",
               display: "flex", justifyContent: "space-between",
             }}>
-              <span style={{ fontSize: 10, color: "#37474f", textTransform: "uppercase", letterSpacing: "0.08em" }}>Total Engines</span>
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#546e7a", fontFamily: "'JetBrains Mono',monospace" }}>
+              <span style={{ fontSize: 10, color: "#cfd8dc", textTransform: "uppercase", letterSpacing: "0.08em" }}>Total Engines</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#cfd8dc", fontFamily: "'JetBrains Mono',monospace" }}>
                 {report.total ?? "—"}
               </span>
             </div>
           </div>
-
           {/* ── Recommendation ── */}
           {report.recommend && (
             <div style={{
@@ -270,14 +248,18 @@ function RawOutput({ text }) {
               borderRadius: 10, padding: "12px 16px",
               display: "flex", gap: 10, alignItems: "flex-start",
             }}>
-              <span style={{ fontSize: 16, flexShrink: 0 }}>
-                {verdictColor === "#00e676" ? "✅" : verdictColor === "#ff1744" ? "🚨" : "⚠️"}
-              </span>
+              {verdictColor === "#00e676" ? (
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00e676" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><polyline points="20 6 9 17 4 12" /></svg>
+              ) : verdictColor === "#ff1744" ? (
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1744" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, animation: "beacon-pulse 1.5s infinite" }}><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffab00" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
+              )}
               <div>
-                <div style={{ fontSize: 9, color: "#37474f", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>
+                <div style={{ fontSize: 9, color: "#cfd8dc", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>
                   Recommendation
                 </div>
-                <div style={{ fontSize: 12, color: "#80cbc4", lineHeight: 1.6 }}>{report.recommend}</div>
+                <div style={{ fontSize: 12, color: "#e0f2f1", lineHeight: 1.6 }}>{report.recommend}</div>
               </div>
             </div>
           )}
@@ -286,17 +268,14 @@ function RawOutput({ text }) {
     </div>
   );
 }
-
 // ─── Result card ─────────────────────────────────────────────
 function ResultCard({ result }) {
   const [vis, setVis] = useState(false);
   const status = deriveStatus(result);
   const meta = STATUS_META[status];
-
   useEffect(() => {
     setTimeout(() => setVis(true), 60);
   }, []);
-
   return (
     <div style={{
       background: "linear-gradient(160deg,#0d2137ee,#08111fee)",
@@ -318,7 +297,7 @@ function ResultCard({ result }) {
             WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
             fontFamily: "'Syne',sans-serif", fontWeight: 800,
           }}>Scan Report</h2>
-          <p style={{ margin: "4px 0 0", fontSize: 12, color: "#37474f", fontFamily: "'JetBrains Mono',monospace" }}>
+          <p style={{ margin: "4px 0 0", fontSize: 12, color: "#cfd8dc", fontFamily: "'JetBrains Mono',monospace" }}>
             {result.target}
           </p>
         </div>
@@ -339,10 +318,8 @@ function ResultCard({ result }) {
           {meta.label}
         </div>
       </div>
-
       {/* Score bar */}
       <ScoreBar score={result.score} animate={vis} />
-
       {/* Engine stats */}
       <div style={{ display: "flex", gap: 10, marginBottom: 24 }}>
         {[
@@ -363,18 +340,17 @@ function ResultCard({ result }) {
             }}>
               <Counter value={value} />
             </div>
-            <div style={{ fontSize: 9, color: "#546e7a", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+            <div style={{ fontSize: 9, color: "#cfd8dc", textTransform: "uppercase", letterSpacing: "0.1em" }}>
               {label}
             </div>
           </div>
         ))}
       </div>
-
       {/* Info rows */}
       <div style={{
         background: "#060f1a", borderRadius: 14,
         padding: "6px 18px", marginBottom: 20,
-        border: "1px solid #00ffff0a",
+        border: "1px solid #00ffff1a",
       }}>
         {[
           ["Risk Level",      result.riskLevel],
@@ -385,9 +361,9 @@ function ResultCard({ result }) {
             display: "flex", justifyContent: "space-between",
             alignItems: "flex-start", gap: 16,
             padding: "11px 0",
-            borderBottom: "1px solid #00ffff08",
+            borderBottom: "1px solid #00ffff10",
           }}>
-            <span style={{ fontSize: 10, color: "#546e7a", textTransform: "uppercase", letterSpacing: "0.08em", flexShrink: 0 }}>
+            <span style={{ fontSize: 10, color: "#cfd8dc", textTransform: "uppercase", letterSpacing: "0.08em", flexShrink: 0 }}>
               {label}
             </span>
             <span style={{ fontSize: 13, color: "#e0f7fa", textAlign: "right", wordBreak: "break-word" }}>
@@ -396,13 +372,11 @@ function ResultCard({ result }) {
           </div>
         ))}
       </div>
-
       {/* Raw output */}
       {result.rawOutput && <RawOutput text={result.rawOutput} />}
     </div>
   );
 }
-
 // ─── Scanning animation ───────────────────────────────────────
 function ScanningIndicator({ url }) {
   const [dots, setDots] = useState(0);
@@ -410,7 +384,6 @@ function ScanningIndicator({ url }) {
     const t = setInterval(() => setDots(d => (d + 1) % 4), 400);
     return () => clearInterval(t);
   }, []);
-
   return (
     <div style={{
       background: "linear-gradient(160deg,#0d2137ee,#08111fee)",
@@ -439,7 +412,9 @@ function ScanningIndicator({ url }) {
           border: "2px solid #00e5ff",
           display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: 14,
-        }}>🔍</div>
+        }}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: "spin-slow 6s linear infinite" }}><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+        </div>
       </div>
       <p style={{
         fontSize: 15, fontWeight: 700, color: "#00e5ff",
@@ -448,7 +423,7 @@ function ScanningIndicator({ url }) {
         Scanning{".".repeat(dots)}
       </p>
       <p style={{
-        fontSize: 11, color: "#546e7a",
+        fontSize: 11, color: "#cfd8dc",
         fontFamily: "'JetBrains Mono',monospace",
         maxWidth: 280, margin: "0 auto",
         overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
@@ -458,7 +433,6 @@ function ScanningIndicator({ url }) {
     </div>
   );
 }
-
 // ─── Page ─────────────────────────────────────────────────────
 export default function UrlScanPage() {
   const [url, setUrl]       = useState("");
@@ -467,12 +441,10 @@ export default function UrlScanPage() {
   const [error, setError]   = useState(null);
   const [ready, setReady]   = useState(false);
   const inputRef = useRef(null);
-
   useEffect(() => {
     setTimeout(() => setReady(true), 60);
     inputRef.current?.focus();
   }, []);
-
   const handleScan = async () => {
     if (!url.trim()) return;
     setLoading(true);
@@ -487,16 +459,13 @@ export default function UrlScanPage() {
       setLoading(false);
     }
   };
-
   const handleKey = (e) => {
     if (e.key === "Enter") handleScan();
   };
-
   return (
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;600&display=swap');
-
         @keyframes float-up {
           from { opacity:0; transform:translateY(28px); }
           to   { opacity:1; transform:translateY(0); }
@@ -521,14 +490,18 @@ export default function UrlScanPage() {
           0%,100% { opacity:1; }
           50%      { opacity:0.75; }
         }
-
+        @keyframes beacon-pulse {
+          0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px #ff174488); }
+          50% { transform: scale(1.1); filter: drop-shadow(0 0 8px #ff1744ff); }
+        }
+        @keyframes spin-slow {
+          to { transform: rotate(360deg); }
+        }
         * { box-sizing:border-box; margin:0; padding:0; }
-
         ::-webkit-scrollbar { width:5px; }
         ::-webkit-scrollbar-track { background:#060f1a; }
         ::-webkit-scrollbar-thumb { background:#00e5ff22; border-radius:3px; }
       `}</style>
-
       <div style={{
         minHeight: "100vh", background: "#060f1a",
         fontFamily: "'JetBrains Mono',monospace",
@@ -543,7 +516,6 @@ export default function UrlScanPage() {
           `,
           backgroundSize: "44px 44px",
         }} />
-
         {/* Glow blobs */}
         <div style={{
           position: "fixed", top: -160, left: "50%",
@@ -552,7 +524,6 @@ export default function UrlScanPage() {
           background: "radial-gradient(ellipse,#00e5ff09,transparent 70%)",
           pointerEvents: "none",
         }} />
-
         {/* Scan line */}
         <div style={{
           position: "fixed", left: 0, right: 0, height: 1,
@@ -560,13 +531,11 @@ export default function UrlScanPage() {
           animation: "scan-line 7s linear infinite",
           pointerEvents: "none",
         }} />
-
         <div style={{
           position: "relative", zIndex: 1,
           maxWidth: 680, margin: "0 auto",
           padding: "64px 24px 80px",
         }}>
-
           {/* Header */}
           <div style={{
             textAlign: "center", marginBottom: 48,
@@ -579,10 +548,11 @@ export default function UrlScanPage() {
               background: "radial-gradient(circle,#00e5ff18,transparent)",
               border: "1px solid #00e5ff33",
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 26, margin: "0 auto 20px",
+              margin: "0 auto 20px",
               boxShadow: "0 0 30px #00e5ff18",
-            }}>🔗</div>
-
+            }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 0 8px #00e5ff66)" }}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+            </div>
             <h1 style={{
               fontSize: "clamp(28px,5vw,42px)", fontWeight: 800,
               background: "linear-gradient(90deg,#00e5ff,#00b0ff,#00e5ff)",
@@ -591,11 +561,10 @@ export default function UrlScanPage() {
               fontFamily: "'Syne',sans-serif", letterSpacing: "-0.02em",
               marginBottom: 10,
             }}>URL Scanner</h1>
-            <p style={{ color: "#37474f", fontSize: 13 }}>
+            <p style={{ color: "#cfd8dc", fontSize: 13 }}>
               Analyse any URL for malware, phishing & threats
             </p>
           </div>
-
           {/* Input card */}
           <div style={{
             background: "linear-gradient(160deg,#0d2137ee,#08111fee)",
@@ -609,12 +578,11 @@ export default function UrlScanPage() {
           }}>
             <label style={{
               display: "block", fontSize: 10,
-              color: "#00e5ff66", textTransform: "uppercase",
+              color: "#00e5ffb3", textTransform: "uppercase",
               letterSpacing: "0.12em", marginBottom: 10,
             }}>
               Target URL
             </label>
-
             <div style={{ display: "flex", gap: 10 }}>
               <input
                 ref={inputRef}
@@ -648,7 +616,7 @@ export default function UrlScanPage() {
                   background: loading || !url.trim()
                     ? "#0d2137"
                     : "linear-gradient(135deg,#005f7a,#00a0c0)",
-                  color: loading || !url.trim() ? "#37474f" : "#fff",
+                  color: loading || !url.trim() ? "#cfd8dc" : "#fff",
                   fontSize: 12, fontWeight: 700,
                   letterSpacing: "0.06em",
                   cursor: loading || !url.trim() ? "not-allowed" : "pointer",
@@ -656,53 +624,65 @@ export default function UrlScanPage() {
                   whiteSpace: "nowrap",
                   boxShadow: loading || !url.trim() ? "none" : "0 0 20px #00e5ff33",
                 }}
+                onMouseEnter={e => {
+                  if (!loading && url.trim()) {
+                    e.currentTarget.style.transform = "translateY(-1px)";
+                    e.currentTarget.style.boxShadow = "0 0 25px #00e5ff66";
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (!loading && url.trim()) {
+                    e.currentTarget.style.transform = "none";
+                    e.currentTarget.style.boxShadow = "0 0 20px #00e5ff33";
+                  }
+                }}
               >
                 {loading ? "Scanning…" : "Scan →"}
               </button>
             </div>
-
             {/* Example chips */}
             <div style={{ marginTop: 14, display: "flex", gap: 8, flexWrap: "wrap" }}>
-              <span style={{ fontSize: 10, color: "#37474f", lineHeight: "26px" }}>Try:</span>
+              <span style={{ fontSize: 10, color: "#cfd8dc", lineHeight: "26px" }}>Try:</span>
               {["https://google.com", "https://github.com"].map(ex => (
                 <button
                   key={ex}
                   onClick={() => setUrl(ex)}
                   style={{
                     padding: "4px 12px", borderRadius: 6,
-                    border: "1px solid #00e5ff18",
+                    border: "1px solid #00e5ff22",
                     background: "transparent",
-                    color: "#00e5ff55", fontSize: 10,
+                    color: "#00e5ffb3", fontSize: 10,
                     cursor: "pointer",
                     fontFamily: "'JetBrains Mono',monospace",
                     transition: "all 0.2s",
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = "#00e5ff44"; e.currentTarget.style.color = "#00e5ff"; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = "#00e5ff18"; e.currentTarget.style.color = "#00e5ff55"; }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = "#00e5ff88"; e.currentTarget.style.color = "#00e5ff"; e.currentTarget.style.background = "#00e5ff0d"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "#00e5ff22"; e.currentTarget.style.color = "#00e5ffb3"; e.currentTarget.style.background = "transparent"; }}
                 >
                   {ex}
                 </button>
               ))}
             </div>
           </div>
-
           {/* States */}
           {loading && <ScanningIndicator url={url} />}
-
           {error && !loading && (
             <div style={{
               background: "#ff174411", border: "1px solid #ff174433",
               borderRadius: 16, padding: "20px 24px",
-              color: "#ff1744aa", fontSize: 13, textAlign: "center",
+              color: "#ff1744d0", fontSize: 13, textAlign: "center",
               animation: "float-up 0.4s ease forwards",
+              display: "flex", alignItems: "center", justifyContent: "center"
             }}>
-              ⚠ {error}
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: "middle", marginRight: 8, color: "#ff1744" }}><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
+              {error}
             </div>
           )}
-
           {result && !loading && <ResultCard result={result} />}
         </div>
       </div>
     </>
   );
 }
+
+
